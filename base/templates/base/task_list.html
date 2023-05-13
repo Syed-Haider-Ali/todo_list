@@ -1,0 +1,62 @@
+{% extends 'base/main.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <div>
+    <h2>hello {{request.user|title}}</h2>   
+    <!-- |title will capitalize frist letters -->
+    <h2>you have <i>{{count}} incomplete task{{ count|pluralize:"s" }}</i></h2>
+</div>
+    {% if request.user.is_authenticated %}
+    <h3><a href="{% url 'logout' %}">Logout</a></h3>
+    {% else %}
+    <h3><a href="{% url 'login' %}">Login</a></h3>
+    {% endif %}
+</div>
+
+
+<div id="search-add-wrapper">
+    <form method="GET" style="display: flex;">
+        <input type='text' style='width:290px;' name='search-area' placeholder="Search your task" value="{{search_input}}">
+        <input class="button" type="submit" value='Search'>
+    </form>
+    <a id="add-link" href="{% url 'task-create' %}">&#x2b;</a>
+</div>
+
+
+<div class="task-wrapper-items">
+    {% for task in tasks %}
+    <div class="task-wrapper">
+            {% if task.complete %}
+            <div class="task-title">
+                <div class="task-complete-icon"></div>
+                <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i>
+            </div>
+            <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
+
+            {% else %}
+            <div class="task-title">
+                <div class="task-complete-icon"></div>
+                <a href="{% url 'task-update' task.id %}">{{task}}</a>
+            </div>
+            <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
+            
+            {% endif %}
+        </div>
+        <!-- <div class="task-controls">
+            <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
+            <span class="handle">&nbsp;&#10247;</span>
+        </div> -->
+        {% empty %}
+            <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
+                <h3>No new tasks are created.</h3>
+                <h3>Create a <a style="text-decoration: none; color: #e53935;" href="{% url 'task-create' %}">New task</a> ! </h3>
+            </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+
+{% endblock content %}
